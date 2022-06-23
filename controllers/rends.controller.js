@@ -8,7 +8,7 @@ module.exports.rendController = {
                 releaseDate: req.body.releaseDate,
             })
             res.json(rend)
-        } catch (err) {
+        }   catch (err) {
             res.status(404).json({
                 error: err.message
             })
