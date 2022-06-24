@@ -12,6 +12,10 @@ const rendSchema = mongoose.Schema(
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'Service'
         }],
+        user: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'User'
+        }
     }
 )
 
