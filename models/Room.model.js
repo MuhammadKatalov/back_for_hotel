@@ -25,6 +25,10 @@ const roomSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  numberPerson: {
+    type: Number,
+    required: 1
+  }
 });
 
 const Room = mongoose.model("Room", roomSchema);
