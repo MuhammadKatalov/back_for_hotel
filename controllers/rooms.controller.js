@@ -26,13 +26,14 @@ module.exports.roomsController = {
 
   postRoom: async (req, res) => {
     try {
-      const { images, price, category, hotel, roomsCounter } = req.body;
+      const { images, price, category, hotel, roomsCounter, numberPerson } = req.body;
       const room = await Room.create({
-        // images,
+        images,
         price,
-        // category,
-        // hotel,
+        category,
+        hotel,
         roomsCounter,
+        numberPerson,
       });
       res.status(200).json(room);
     } catch (e) {
@@ -45,10 +46,10 @@ module.exports.roomsController = {
   patchRoom: async (req, res) => {
     try {
       const { id } = req.params;
-      const { images, price, category, rented, hotel, roomsCounter } = req.body;
+      const { images, price, category, rented, hotel, roomsCounter, numberPerson } = req.body;
       const room = await Room.findByIdAndUpdate(
         id,
-        { images, price, category, rented, hotel, roomsCounter },
+        { images, price, category, rented, hotel, roomsCounter, numberPerson },
         { new: true }
       ).populate("hotel category");
       res.status(200).json(room);
