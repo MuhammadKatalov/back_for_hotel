@@ -28,10 +28,10 @@ module.exports.roomsController = {
     try {
       const { images, price, category, hotel, roomsCounter } = req.body;
       const room = await Room.create({
-        images,
+        // images,
         price,
-        category,
-        hotel,
+        // category,
+        // hotel,
         roomsCounter,
       });
       res.status(200).json(room);
