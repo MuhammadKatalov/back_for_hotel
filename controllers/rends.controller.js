@@ -1,7 +1,8 @@
-const Rend = require("../models/Rend.model")
+const Rend = require("../models/Rend.model");
 const Room = require("../models/Room.model");
+const User = require("../models/User.model");
 
-module.exports.rendController = {
+module.exports.rendsController = {
     postRend: async (req, res) => {
         try {
 
@@ -10,19 +11,25 @@ module.exports.rendController = {
             const rend = await Rend.create({
                 registrationDate: req.body.registrationDate,
                 releaseDate: req.body.releaseDate,
-                room: req.body.room,
+                room: req.params.roomId,
                 service: req.body.service,
                 user: req.body.user
-            }).populate('room')
+            })
 
             if (room.rented) {
-                return res.json('Данный номер занят');
+                return res.json({error: 'Данный номер занят'});
             }
 
             await Room.findByIdAndUpdate(req.params.roomId,
                 {
                     rented: true
                 })
+
+            await User.findByIdAndUpdate(req.params.userId, {
+                $push: {
+                    booked: req.params.roomId
+                }
+            })
 
             res.json(rend)
         } catch (err) {
@@ -40,6 +47,12 @@ module.exports.rendController = {
                     rented: false
                 })
 
+            await User.findByIdAndUpdate(req.params.userId, {
+                $pull: {
+                    booked: req.params.roomId
+                }
+            })
+
             await Rend.findByIdAndDelete(req.params.rend);
 
             res.json('Бронь с номера снята');
@@ -52,7 +65,7 @@ module.exports.rendController = {
 
     getAllRends: async (req, res) => {
         try {
-            const rends = await Rend.find({});
+            const rends = await Rend.find({}).populate('room user');
 
             res.status(200).json(rends);
         } catch (err) {
@@ -71,6 +84,18 @@ module.exports.rendController = {
                 user: req.body.user
             });
             res.json(changeRend);
+        } catch (err) {
+            res.status(200).json({
+                error: err.message
+            })
+        }
+    },
+
+    getRendsByUserId: async (req, res) => {
+        try {
+            const rendByUser = await Rend.find({ user: req.params.userId }).populate('room');
+
+            res.json(rendByUser);
         } catch (err) {
             res.status(200).json({
                 error: err.message
