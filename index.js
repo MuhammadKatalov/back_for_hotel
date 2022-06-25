@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(router);
 
-mongoose.connect(process.env.MONGO_SERVER).then(() => {
+mongoose.connect(process.env.DB_URL).then(() => {
   app.listen(PORT, () =>
     console.log(`Server has been started, http://localhost:${PORT}`)
   );
