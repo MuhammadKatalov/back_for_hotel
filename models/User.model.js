@@ -1,28 +1,36 @@
-const { Schema, model, default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
-const UserSchema = new Schema({
-  avatar: {
+const userSchema = mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  phoneNumber: Number,
+  country: {
     type: String,
-    default: "",
+    default: "Russia",
   },
-  name: String,
-  surname: String,
+  login: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    require: true,
+  },
   booked: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Room",
     },
   ],
   roles: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: String,
       ref: "Role",
     },
   ],
-  email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },
-  isActivated: { type: Boolean, default: false },
-  activationLink: { type: String },
 });
 
-module.exports = model("User", UserSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
