@@ -1,107 +1,89 @@
-const userService = require("../services/user-services");
-const { validationResult } = require("express-validator");
-const ApiError = require("../exceptions/api-error");
-const User = require("../models/User.model")
-const Role = require("../models/Role.model")
+const User = require("../models/User.model");
+const Role = require("../models/Role.model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-class UserController {
-  async registration(req, res, next) {
+module.exports.usersController = {
+  registerUser: async (req, res) => {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return next(ApiError.BadRequest("Некорректный email", errors.array()));
+      const { firstName, lastName, phoneNumber, country, login, password } =
+        req.body;
+
+      const hash = await bcrypt.hash(
+        password,
+        Number(process.env.BCRYPT_ROUNDS)
+      );
+
+      const userRole = await Role.findOne({ value: "USER" });
+      const user = await User.create({
+        firstName,
+        lastName,
+        phoneNumber,
+        country,
+        login,
+        password: hash,
+        roles: [userRole.value],
+      });
+
+      res.json(user);
+    } catch (e) {
+      return res.status(400).json("Ошибка регистрации " + e.toString());
+    }
+  },
+
+  login: async (req, res) => {
+    try {
+      const { login, password } = req.body;
+
+      const candidate = await User.findOne({ login });
+
+      if (!candidate) {
+        return res
+          .status(401)
+          .json(`Пользователь с таким адресом '${login}' не найден`);
       }
-      const { email, password } = req.body;
-      const userData = await userService.registration(email, password);
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
-      return res.json(userData);
-    } catch (e) {
-      next(e);
-    }
-  }
 
-  async login(req, res, next) {
-    try {
-      const { email, password } = req.body;
-      const userData = await userService.login(email, password);
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
-      return res.json(userData);
-    } catch (e) {
-      next(e);
-    }
-  }
+      const valid = await bcrypt.compare(password, candidate.password);
 
-  async logout(req, res, next) {
-    try {
-      const { refreshToken } = req.cookies;
-      const token = await userService.logout(refreshToken);
-      res.clearCookie("refreshToken");
-      return res.json(token);
-    } catch (e) {
-      next(e);
-    }
-  }
+      if (!valid) {
+        return res.status(401).json("Неверный пароль");
+      }
 
-  async activate(req, res, next) {
-    try {
-      const activationLink = req.params.link;
-      await userService.activate(activationLink);
-      return res.redirect(process.env.CLIENT_URL);
-    } catch (e) {
-      next(e);
-    }
-  }
+      const payload = {
+        id: candidate._id,
+        login: candidate.login,
+        roles: candidate.roles,
+      };
 
-  async refresh(req, res, next) {
-    try {
-      const { refreshToken } = req.cookies;
-      const userData = await userService.refresh(refreshToken);
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
-      return res.json(userData);
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async getUsers(req, res, next) {
-    try {
-      // const userRole = new Role()
-      // const adminRole = new Role({value: "ADMIN"})
-      // await userRole.save()
-      // await adminRole.save()
-
-      res.json("dslfkn")
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async favoriteTest(req, res) {
-    try {
-      await User.findByIdAndUpdate(req.user.id, {
-        $addToSet: { favoriteTest: req.params.id },
+      const token = await jwt.sign(payload, process.env.SECRET_JWT_KEY, {
+        expiresIn: "24h",
       });
 
-      res.json("Тест добавлен в избранное");
+      res.json({ token });
+    } catch (e) {}
+  },
+
+  favoriteTest: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          $addToSet: { favoriteTest: req.params.id },
+        },
+        { new: true }
+      );
+
+      res.json(user);
     } catch (e) {
       res.json({
         error: e.toString(),
       });
     }
-  }
+  },
 
-  async removeFavorite(req, res) {
+  removeFavorite: async (req, res) => {
     try {
-      await User.findByIdAndUpdate(req.user.id, {
+      await User.findByIdAndUpdate(req.params.id, {
         $pull: { favoriteTest: req.params.id },
       });
 
@@ -111,7 +93,13 @@ class UserController {
         error: e.toString(),
       });
     }
-  }
-}
+  },
 
-module.exports = new UserController();
+  getUsers: async (req, res) => {
+    try {
+      res.json("dkscjbskcj");
+    } catch {
+      res.json("Жаг1");
+    }
+  },
+};
