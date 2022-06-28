@@ -3,10 +3,9 @@ const mongoose = require("mongoose");
 const userSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
-  phoneNumber: Number,
+  phoneNumber: String,
   country: {
     type: String,
-    default: "Russia",
   },
   login: {
     type: String,
