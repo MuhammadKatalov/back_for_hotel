@@ -9,6 +9,7 @@ const roomSchema = mongoose.Schema({
   price: {
     type: Number,
   },
+  
   category: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: "Category",
