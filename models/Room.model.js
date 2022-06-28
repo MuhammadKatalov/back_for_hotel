@@ -9,18 +9,9 @@ const roomSchema = mongoose.Schema({
   price: {
     type: Number,
   },
-  
-  category: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: "Category",
-  },
   rented: {
     type: Boolean,
     default: false,
-  },
-  hotel: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: "Hotel",
   },
   roomsCounter: {
     type: Number,
@@ -29,7 +20,9 @@ const roomSchema = mongoose.Schema({
   numberPerson: {
     type: Number,
     required: 1
-  }
+  },
+  inside: String,
+  outSide: String
 });
 
 const Room = mongoose.model("Room", roomSchema);
