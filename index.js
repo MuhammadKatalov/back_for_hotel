@@ -15,6 +15,7 @@ const router = require("./routes");
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(router);
+app.use(express.static(path.resolve(__dirname, 'public')));
 
 mongoose.connect(process.env.DB_URL).then(() => {
   app.listen(PORT, () =>

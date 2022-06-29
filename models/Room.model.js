@@ -22,7 +22,7 @@ const roomSchema = mongoose.Schema({
     required: 1
   },
   inside: String,
-  outSide: String
+  outside: String
 });
 
 const Room = mongoose.model("Room", roomSchema);
