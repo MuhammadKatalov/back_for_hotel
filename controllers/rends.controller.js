@@ -13,7 +13,7 @@ module.exports.rendsController = {
                 releaseDate: req.body.releaseDate,
                 room: req.params.roomId,
                 service: req.body.service,
-                user: req.body.user
+                user: req.user.id
             })
 
             if (room.rented) {

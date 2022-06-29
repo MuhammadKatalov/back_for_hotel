@@ -33,6 +33,7 @@ module.exports.usersController = {
 
   login: async (req, res) => {
     try {
+      console.log(111)
       const { login, password } = req.body;
 
       const candidate = await User.findOne({ login });
@@ -59,7 +60,7 @@ module.exports.usersController = {
         expiresIn: "24h",
       });
 
-      res.json({ token });
+      res.json({token});
     } catch (e) {}
   },
 
