@@ -14,8 +14,8 @@ module.exports.roomsController = {
 
   getRoomById: async (req, res) => {
     try {
-      const { id } = req.params;
-      const room = await Room.findById(id)
+      // const { id } = req.params;
+      const room = await Room.findOne()
       res.status(200).json(room);
     } catch (e) {
       res.json({

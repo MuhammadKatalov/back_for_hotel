@@ -33,7 +33,6 @@ module.exports.usersController = {
 
   login: async (req, res) => {
     try {
-      console.log(111)
       const { login, password } = req.body;
 
       const candidate = await User.findOne({ login });
@@ -55,44 +54,17 @@ module.exports.usersController = {
         login: candidate.login,
         roles: candidate.roles,
       };
+      console.log()
 
       const token = await jwt.sign(payload, process.env.SECRET_JWT_KEY, {
         expiresIn: "24h",
       });
 
-      res.json({token});
-    } catch (e) {}
-  },
+      console.log({token})
 
-  favoriteTest: async (req, res) => {
-    try {
-      const user = await User.findByIdAndUpdate(
-        req.user.id,
-        {
-          $addToSet: { favoriteTest: req.params.id },
-        },
-        { new: true }
-      );
-
-      res.json(user);
+      res.json({ token });
     } catch (e) {
-      res.json({
-        error: e.toString(),
-      });
-    }
-  },
-
-  removeFavorite: async (req, res) => {
-    try {
-      await User.findByIdAndUpdate(req.params.id, {
-        $pull: { favoriteTest: req.params.id },
-      });
-
-      res.json("Тест убран из избранного");
-    } catch (e) {
-      res.json({
-        error: e.toString(),
-      });
+      return res.status(400).json("Ошибка авторизации " + e.toString());
     }
   },
 
