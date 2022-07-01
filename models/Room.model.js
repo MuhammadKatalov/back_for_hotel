@@ -18,8 +18,7 @@ const roomSchema = mongoose.Schema({
     required: true,
   },
   numberPerson: {
-    type: Number,
-    required: 1
+    type: Number
   },
   inside: String,
   outside: String

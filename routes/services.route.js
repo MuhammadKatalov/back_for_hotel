@@ -3,8 +3,8 @@ const { servicesController } = require("../controllers/services.controller");
 
 const router = Router();
 
-router.post("/services", servicesController.postService);
-router.get("/services", servicesController.getServices);
+router.post("/", servicesController.postService);
+router.get("/", servicesController.getServices);
 router.get("/services/:id", servicesController.getServiceById);
 router.delete("/services/:id", servicesController.deleteServiceById);
 router.patch("/services/:id", servicesController.patchServiceById);

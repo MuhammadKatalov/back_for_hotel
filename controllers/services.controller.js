@@ -3,9 +3,9 @@ const Service = require("../models/Service.model");
 module.exports.servicesController = {
   postService: async (req, res) => {
     try {
-      const { photo, title, description } = req.body;
+      const { photo, title, description, price } = req.body;
 
-      const service = await Service.create({ photo, title, description });
+      const service = await Service.create({ price, photo, title, description });
 
       res.status(200).json(service);
     } catch (e) {

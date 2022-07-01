@@ -5,20 +5,25 @@ const User = require("../models/User.model");
 module.exports.rendsController = {
     postRend: async (req, res) => {
         try {
-
+            console.log(req.params.roomId);
             const room = await Room.findById(req.params.roomId);
 
             const rend = await Rend.create({
                 registrationDate: req.body.registrationDate,
                 releaseDate: req.body.releaseDate,
-                room: req.params.roomId,
-                service: req.body.service,
-                user: req.body.user
-            })
+                roomId: req.params.roomId,
+                user: req.user.id,
+                service: req.body.services
+            })  
 
-            if (room.rented) {
-                return res.json({error: 'Данный номер занят'});
-            }
+            console.log(rend);
+            // if (room.rented) {
+            //     return res.json({error: 'Данный номер занят'});
+            // }
+
+            // await Rend.findByIdAndUpdate(rend._id, {
+            //     $addToSet: { service: req.body.services }
+            // }, { new: true })
 
             await Room.findByIdAndUpdate(req.params.roomId,
                 {
