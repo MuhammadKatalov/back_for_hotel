@@ -54,15 +54,12 @@ module.exports.usersController = {
         login: candidate.login,
         roles: candidate.roles,
       };
-      console.log()
 
       const token = await jwt.sign(payload, process.env.SECRET_JWT_KEY, {
         expiresIn: "24h",
       });
 
-      console.log({token})
-
-      res.json({ token });
+      res.json({ token, id: payload.id });
     } catch (e) {
       return res.status(400).json("Ошибка авторизации " + e.toString());
     }
