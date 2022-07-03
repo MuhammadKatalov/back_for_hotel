@@ -54,13 +54,11 @@ module.exports.usersController = {
         login: candidate.login,
         roles: candidate.roles,
       };
-      console.log()
 
       const token = await jwt.sign(payload, process.env.SECRET_JWT_KEY, {
         expiresIn: "24h",
       });
 
-      console.log({token})
 
       res.json({ token });
     } catch (e) {
