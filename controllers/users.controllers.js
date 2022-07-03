@@ -59,8 +59,8 @@ module.exports.usersController = {
         expiresIn: "24h",
       });
 
+      res.json({ token, id: payload.id });
 
-      res.json({ token });
     } catch (e) {
       return res.status(400).json("Ошибка авторизации " + e.toString());
     }
