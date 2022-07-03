@@ -5,7 +5,6 @@ const User = require("../models/User.model");
 module.exports.rendsController = {
     postRend: async (req, res) => {
         try {
-            console.log(req.params.roomId);
             const room = await Room.findById(req.params.roomId);
 
             const rend = await Rend.create({
@@ -14,16 +13,14 @@ module.exports.rendsController = {
                 roomId: req.params.roomId,
                 user: req.user.id,
                 service: req.body.services
-            })  
+            });
 
-            console.log(rend);
+            const allRends = await Rend.find().populate("user service");
+
             // if (room.rented) {
             //     return res.json({error: 'Данный номер занят'});
             // }
 
-            // await Rend.findByIdAndUpdate(rend._id, {
-            //     $addToSet: { service: req.body.services }
-            // }, { new: true })
 
             await Room.findByIdAndUpdate(req.params.roomId,
                 {
@@ -36,7 +33,7 @@ module.exports.rendsController = {
                 }
             })
 
-            res.json(rend)
+            res.json(allRends)
         } catch (err) {
             res.status(404).json({
                 error: err.message
@@ -70,7 +67,7 @@ module.exports.rendsController = {
 
     getAllRends: async (req, res) => {
         try {
-            const rends = await Rend.find({}).populate('room user');
+            const rends = await Rend.find({}).populate('user service');
 
             res.status(200).json(rends);
         } catch (err) {

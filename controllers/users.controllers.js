@@ -60,6 +60,7 @@ module.exports.usersController = {
       });
 
       res.json({ token, id: payload.id });
+
     } catch (e) {
       return res.status(400).json("Ошибка авторизации " + e.toString());
     }
