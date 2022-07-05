@@ -4,6 +4,10 @@ const userSchema = mongoose.Schema({
   firstName: String,
   lastName: String,
   phoneNumber: String,
+  avatar: {
+    type: String,
+    default: ''
+  },
   country: {
     type: String,
   },
