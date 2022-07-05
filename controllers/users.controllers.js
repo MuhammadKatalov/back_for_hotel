@@ -73,4 +73,49 @@ module.exports.usersController = {
       res.json("Жаг1");
     }
   },
+
+  getUserById: async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      const user = await User.findById(userId).populate('booked');
+
+      res.status(200).json(user);
+
+    } catch (e) {
+      res.status(500).json({
+        error: e.message
+      })
+    }
+  },
+  patchUserById: async (req, res) => {
+    try {
+      const {userId} = req.params;
+
+      const { firstName, lastName, login } = req.body;
+
+      const user = await User.findByIdAndUpdate(userId, { firstName, lastName, login }, {new: true});
+
+      res.status(200).json(user);
+
+    } catch (e) {
+      res.status(500).json({
+        error: e.message
+      });
+    }
+  },
+  patchUserAvatar: async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      const user = await User.findByIdAndUpdate(userId, { avatar: req.file.filename }, { new: true });
+
+      res.status(200).json(user);
+
+    } catch (e) {
+      res.status(500).json({
+        error: e.message
+      })
+    }
+  }
 };
